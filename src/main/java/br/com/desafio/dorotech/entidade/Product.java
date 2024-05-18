@@ -12,7 +12,7 @@ import org.springframework.data.annotation.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collation = "products")
+@Document(collection = "products")
 public class Product {
 
     @Id
