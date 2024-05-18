@@ -3,7 +3,7 @@ version: '3'
 services:
   mongo:
     image: mongo
-    container_name: ms-mongo
+    container_name: desafio-dorotech
     environment:
       MONGO_INITDB_ROOT_USERNAME: diogo123
       MONGO_INITDB_ROOT_PASSWORD: diogo123
