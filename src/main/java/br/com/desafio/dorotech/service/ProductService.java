@@ -51,6 +51,11 @@ public class ProductService {
         }
     }
 
+    public void delete(String id){
+        Product product = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Product does not exist"));
+        repository.delete(product);
+    }
+
     private void validateRequest(ProductRecordRequest request) {
         if (Objects.isNull(request)) {
             throw new IllegalArgumentException("The request cannot be null");
