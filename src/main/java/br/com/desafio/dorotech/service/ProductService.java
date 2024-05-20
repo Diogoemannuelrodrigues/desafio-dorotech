@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,17 +38,16 @@ public class ProductService {
     }
 
     public ProductRecordResponse updateProduct(ProductRecordRequest request, String id) {
-        Optional<Product> optionalProduct = repository.findById(id);
-        if (optionalProduct.isPresent()) {
-            Product existingProduct = optionalProduct.get();
-            Product newProduct = ProductMapper.toEntity(request);
-            newProduct.setId(existingProduct.getId());
-            Product updatedProduct = repository.save(newProduct);
-            return ProductMapper.toResponse(updatedProduct);
-        } else {
-            throw new IllegalArgumentException("Product does not exist");
-        }
+        return repository.findById(id)
+                .map(existingProduct -> {
+                    Product updatedProduct = ProductMapper.toEntity(request);
+                    updatedProduct.setId(existingProduct.getId());
+                    return repository.save(updatedProduct);
+                })
+                .map(ProductMapper::toResponse)
+                .orElseThrow(() -> new IllegalArgumentException("Product does not exist"));
     }
+
 
     public void delete(String id){
         Product product = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Product does not exist"));
