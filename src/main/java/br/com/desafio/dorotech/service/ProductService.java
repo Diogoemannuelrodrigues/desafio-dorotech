@@ -6,6 +6,7 @@ import br.com.desafio.dorotech.entidade.response.ProductRecordResponse;
 import br.com.desafio.dorotech.exceptions.ProductNotCanBeNullException;
 import br.com.desafio.dorotech.exceptions.ProductNotFoundException;
 import br.com.desafio.dorotech.mapper.ProductMapper;
+import br.com.desafio.dorotech.producer.ProductMessageProducer;
 import br.com.desafio.dorotech.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,12 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private final ProductRepository repository;
+    private final ProductMessageProducer productMessageProducer;
 
     public ProductRecordResponse createProduct(ProductRecordRequest request) {
         validateRequest(request);
         Product savedProduct = repository.save(ProductMapper.toEntity(request));
+        productMessageProducer.sendMessage("Product created: " + savedProduct.toString());
         return ProductMapper.toResponse(savedProduct);
     }
 
